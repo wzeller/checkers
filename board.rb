@@ -36,7 +36,8 @@ class Board
 
 	def [](pos)
 		i, j = pos 
-		@rows[i][j]
+		return nil if i.nil? || j.nil? || @rows[i][j].nil?
+		@rows[i][j] 
 	end
 
 	def []=(pos, piece)
@@ -51,6 +52,7 @@ class Board
 
 	def valid_pos?(pos)
 		i, j = pos
+		return false if pos.length == 1 || i.nil? || j.nil?
 		return false if i < 0 || i > 7 || j < 0 || j > 7
 		true
 	end
@@ -112,13 +114,15 @@ class Board
 	    new_board = Board.new(false)
 
     	pieces.each do |piece|
-      		Piece.new(piece.pos, piece.color, new_board)
+      		new_piece = Piece.new(piece.pos, piece.color, new_board)
+      		new_piece.king = true if piece.king == true
     	end
 
    		new_board
   	end
 
 	def is_valid_move?(start_pos, end_pos, color)
+		return false if self[start_pos] == nil
 		return false unless self[start_pos].legal_moves.include?(end_pos)
 		return false unless self[start_pos].color == color
 		true 

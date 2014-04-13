@@ -27,14 +27,6 @@ class Piece
 		board.add_piece(self, @pos)
 	end
 
-	# def delta
-	# 	if @king == false
-	# 		return -1 if color == :white
-	# 		return 1 if color == :black 
-	# 	end
-	# 	#figure out how to handle king direction
-	# end
-
 	def all_moves
 		sliding_moves = []
 		jump_moves = []
