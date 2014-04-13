@@ -63,25 +63,20 @@ class Board
 	end
 
 	def render
-
 		print " 0 1 2 3 4 5 6 7\n"
-    	@rows.map.with_index do |row, i|
-     		row.map.with_index do |piece, j|
-
+  	@rows.map.with_index do |row, i|
+   		row.map.with_index do |piece, j|
 				#add row numbers at end of row
 				j == 7 ? a = "#{i}" : a = ""
-				
 				#alternate background of squares
-        		(i+j).even? ? background_color = :red : background_color = :light_black 
-
-        		if piece.nil? 
-        			("  ").colorize({background: background_color})+a 
-        		else 
-        			(piece.render + " ").colorize({color: piece.color, background: background_color})+a
-        		end
-
-      		end.join
-    	end.join("\n")
+      	(i+j).even? ? background_color = :red : background_color = :light_black 
+     		if piece.nil? 
+     			("  ").colorize({background: background_color})+a 
+     		else 
+      		(piece.render + " ").colorize({color: piece.color, background: background_color})+a
+      	end
+    	end.join
+  	end.join("\n")
  	end
 
  	def move(start_pos, end_pos)
@@ -126,6 +121,17 @@ class Board
 		return false unless self[start_pos].legal_moves.include?(end_pos)
 		return false unless self[start_pos].color == color
 		true 
+	end
+
+	def can_any_piece_jump?(color)
+		@rows.each_index do |i| 
+			@rows.each_index  do |j|
+				position = [i,j]
+				next if self[position] == nil || self[position].color != color
+				return true if self[position].legal_jump_moves != []
+			end
+		end
+		false
 	end
 
 end

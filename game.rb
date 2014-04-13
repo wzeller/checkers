@@ -3,17 +3,17 @@ require './board'
 class InvalidMoveError < RuntimeError
 end
 
-TURN = {true: :white, false: :black}
 OPPONENT_TURN = {white: :black, black: :white}
 
 class Game
 
 	def initialize
 		@board = Board.new
+		@turn = :white
 	end
 	
 	def play
-	@turn = TURN[:true]
+	
 
 		while true 
 			begin 
@@ -22,9 +22,10 @@ class Game
 
 			rescue InvalidMoveError
 				puts "Invalid move, try again"
+				retry
 			end
 
-			p @board.count_pieces(OPPONENT_TURN[@turn])
+			puts "Your opponent has #{@board.count_pieces(OPPONENT_TURN[@turn])} pieces left."
 
 			if @board.count_pieces(OPPONENT_TURN[@turn]) == 0
 				puts "Congratulations #{turn}, you won"
@@ -32,6 +33,7 @@ class Game
 			end 
 			@turn = OPPONENT_TURN[@turn]
 		end
+
 		puts "Game over."
 		return nil
 	end
@@ -78,11 +80,7 @@ class Game
 	end
 
 	def get_moves_from_user(turn)
-		
-	valid_move = false
-
-		until valid_move == true
-			begin
+		begin
 			print @board.render+"\n\n"
 			print "It is #{turn}'s turn.\n\n"
 			puts "Enter a move (start):\n"
@@ -93,19 +91,13 @@ class Game
 			add_moves = process_user_entry
 
 			processed_moves = process_moves(start_pos, end_pos, add_moves) 
-			#handle errors by looping
-			valid_move = false if processed_moves.each_with_index{|pos, idx| @board[pos] == nil || pos == processed_moves[idx+1] } 
-
-			valid_move = true if processed_moves.each{|pos| @board.valid_pos?(pos)} && processed_moves.length > 1
 
 			rescue InvalidMoveError
 				puts "Invalid move, try again"
-				retry 
-			end
-			
+			retry 
 		end
-
-	return start_pos, end_pos, add_moves
+		
+		return start_pos, end_pos, add_moves
 	end
 
 	def process_user_entry

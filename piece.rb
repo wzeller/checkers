@@ -54,7 +54,21 @@ class Piece
 		possible_slide_moves, possible_jump_moves = self.all_moves
 		possible_moves = possible_jump_moves + possible_slide_moves
 		possible_moves.each {|move| legal_moves_list << move if can_perform_slide?(move) || can_perform_jump?(move)}
-		legal_moves_list
+		
+		if @board.can_any_piece_jump?(self.color) == false
+			return legal_moves_list
+		else
+			return legal_jump_moves
+		end
+		
+	end
+
+	def legal_jump_moves
+		legal_jump_moves_list = []
+		possible_slide_moves, possible_jump_moves = self.all_moves
+		possible_moves = possible_jump_moves
+		possible_moves.each {|move| legal_jump_moves_list << move if can_perform_jump?(move)}
+		legal_jump_moves_list
 	end
 
 	def can_move_to?(end_pos)
